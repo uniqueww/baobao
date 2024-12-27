@@ -7,7 +7,7 @@
  */
 const axios = require('axios');
 // 在其他文件中调用
-const wxPusher = require('./wxpusher.js');
+const wxPusher = require('../wxpusher.js');
 const imageUrl = 'https://webquotepic.eastmoney.com/GetPic.aspx?token=44c9d251add88e27b65ed86506f6e5da&nid=118.SHAU&type=r&imageType=rf';
 // API Key 和环境变量的目标金价
 
