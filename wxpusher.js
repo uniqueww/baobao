@@ -1,7 +1,7 @@
 /**
  * WxPusher推送服务
  * author: uniqueww
- * desc: 配置WXPUSHER_APP_TOKEN （apptoken）和 WXPUSHER_DEFULT（默认zhuti）
+ * desc: 配置WXPUSHER_APP_TOKEN （apptoken）和 WXPUSHER_DEFULT（默认主题ID）
  */
 const axios = require('axios');
 
@@ -11,7 +11,7 @@ const getConfig = () => {
   //topicIds 是一个逗号分隔的字符串
   const topicIds = process.env.WXPUSHER_DEFULT;
   if (!appToken || !topicIds) {
-    console.log('请先设置 WXPUSHER_APP_TOKEN 和 WXPUSHER_TOPIC_IDS');
+    console.log('请先设置 WXPUSHER_APP_TOKEN 和 WXPUSHER_DEFULT');
     process.exit(0);
   }
   const topicIdsArray = topicIds.split(',');
