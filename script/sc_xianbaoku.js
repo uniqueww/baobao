@@ -15,7 +15,7 @@ const newUrl = domin + "/plus/json/rank/yixiaoshi.json";
 
 const pingbifenlei = "微博线报|线报活动|食品饮料|个护美妆|服饰鞋帽|居家生活|母婴儿童|数码电子|运动户外|宠物天地|医疗保健|更多好物|豆瓣线报|豆瓣买组|豆瓣拼组|豆瓣发组|豆瓣狗组|爱猫生活|爱猫澡盆|小嘀咕|酷安|葫芦侠三楼|小刀娱乐网|3K8资讯网|技术QQ网|YYOK大全|活动资讯网|免费赚钱中心线报活动|食品饮料|个护美妆|服饰鞋帽|居家生活|母婴儿童|数码电子|运动户外|宠物天地|医疗保健|更多好物买组|拼组|发组|狗组|爱猫生活|爱猫澡盆";
 const pingbitime = "5";
-
+const PUSH_TOPIC = process.env.XBTOPIC;
 
 function daysComputed(time) {
     const oldTimeFormat = new Date(time.replace(/-/g, "/"));
@@ -119,7 +119,7 @@ function generateRegexString(keywords) {
         for (const item of items) {
             const text = item.title;
             const desp = domin + item.url;
-            await wxPusher(text, text, desp);
+            await wxPusher(text, text, desp, ...(PUSH_TOPIC ? PUSH_TOPIC : null));
 
             if (hebingdata) hebingdata += "\n\n";
             hebingdata += `${item.title}【${item.catename}】${desp}`;

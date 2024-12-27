@@ -1,10 +1,15 @@
+/**
+ * WxPusher推送服务
+ * author: uniqueww
+ * desc: 配置WXPUSHER_APP_TOKEN （apptoken）和 WXPUSHER_DEFULT（默认zhuti）
+ */
 const axios = require('axios');
 
 
 const getConfig = () => {
   const appToken = process.env.WXPUSHER_APP_TOKEN;
   //topicIds 是一个逗号分隔的字符串
-  const topicIds = process.env.WXPUSHER_TOPIC_IDS;
+  const topicIds = process.env.WXPUSHER_DEFULT;
   if (!appToken || !topicIds) {
     console.log('请先设置 WXPUSHER_APP_TOKEN 和 WXPUSHER_TOPIC_IDS');
     process.exit(0);
@@ -16,7 +21,7 @@ const getConfig = () => {
 const { appToken, topicIdsArray } = getConfig();
 
 // 发送WxPusher通知消息
-async function wxPusherNotify(text,summary,desp) {
+async function wxPusherNotify(text,summary,desp,topicIds = topicIdsArray) {
   try {
     const response = await axios.post('https://wxpusher.zjiecode.com/api/send/message', {
       appToken: appToken,
@@ -24,7 +29,7 @@ async function wxPusherNotify(text,summary,desp) {
       summary: summary,
       url: desp,
       contentType: 2,
-      topicIds: topicIdsArray
+      topicIds: topicIds
     }, {
       headers: {
         'Content-Type': 'application/json'
