@@ -24,7 +24,7 @@ async function wxPusherNotify(text,summary,desp) {
       summary: summary,
       url: desp,
       contentType: 2,
-      topicIds: [32482]
+      topicIds: topicIdsArray
     }, {
       headers: {
         'Content-Type': 'application/json'
