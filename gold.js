@@ -1,18 +1,20 @@
+
+
 const axios = require('axios');
 // 在其他文件中调用
-const wxPusher = require('./wxpusher.js'); 
+const wxPusher = require('./wxpusher.js');
 const imageUrl = 'https://webquotepic.eastmoney.com/GetPic.aspx?token=44c9d251add88e27b65ed86506f6e5da&nid=118.SHAU&type=r&imageType=rf';
 // API Key 和环境变量的目标金价
 
 const getConfig = () => {
-    const API_KEY = process.env.API_KEY;
-    const TARGET_PRICE = process.env.TARGET_PRICE || 450; // 从环境变量读取金价，默认值为500
+    const API_KEY = process.env.TS_API_KEY;
+    const TARGET_PRICE = process.env.TARGET_PRICE || 580; // 从环境变量读取金价，默认值为500
     if (!API_KEY) {
-      console.log('API_KEY 必须设置');
-      process.exit(1);
+        console.log('TS_API_KEY 必须设置');
+        process.exit(1);
     }
     return { API_KEY, TARGET_PRICE };
-  }
+}
 
 const { API_KEY, TARGET_PRICE } = getConfig();
 
@@ -26,7 +28,7 @@ function sendNotification(message, summary) {
             <a href=${imageUrl} style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #4CAF50; text-decoration: none; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">点击查看详情</a>
         </div>
     `;
-    wxPusher(htmlMessage,summary, imageUrl);
+    wxPusher(htmlMessage, summary, imageUrl);
 }
 
 // 查询金价的函数
@@ -48,7 +50,7 @@ async function fetchGoldPrice() {
         // 判断是否需要发送通知
         const now = new Date();
         const isWednesday = now.getDay() === 3; // 判断是否是周三
-        const isWithinTime = now.getHours() === 9; // 判断是否在早上9点
+        const isWithinTime = now.getHours() === 9 || now.getHours() === 10; // 判断是否在早上9点或10点
         if (goldPrice < TARGET_PRICE) {
             const message = `
                 当前金价为 <span style="color: #E53935; font-weight: bold;">${goldPrice} 元/克</span>，
