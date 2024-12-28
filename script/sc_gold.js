@@ -35,7 +35,11 @@ function sendNotification(message, summary) {
             <a href=${imageUrl} style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #4CAF50; text-decoration: none; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">点击查看详情</a>
         </div>
     `;
-    wxPusher(htmlMessage, summary, imageUrl, ...(PUSH_TOPICIDS ? PUSH_TOPICIDS : []));
+    const args = [tmlMessage, summary, imageUrl]
+    if(PUSH_TOPICIDS){
+        args.push(PUSH_TOPICIDS)
+    }
+    wxPusher(...args);
 }
 
 // 查询金价的函数
