@@ -22,6 +22,7 @@ const { appToken, topicIdsArray } = getConfig();
 
 // 发送WxPusher通知消息
 async function wxPusherNotify(text,summary,desp,topicIds = topicIdsArray) {
+  topicIds = topicIds.map(id=>Number(id)).filter(id=>!isNaN(id))
   try {
     const response = await axios.post('https://wxpusher.zjiecode.com/api/send/message', {
       appToken: appToken,

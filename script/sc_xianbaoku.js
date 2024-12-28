@@ -119,8 +119,11 @@ function generateRegexString(keywords) {
         for (const item of items) {
             const text = item.title;
             const desp = domin + item.url;
-            await wxPusher(text, text, desp, ...(PUSH_TOPIC ? PUSH_TOPIC : null));
-
+            const args = [text, text, desp];
+            if (PUSH_TOPIC) {
+                args.push(PUSH_TOPIC);
+            }
+            await wxPusher(...args)
             if (hebingdata) hebingdata += "\n\n";
             hebingdata += `${item.title}【${item.catename}】${desp}`;
         }
