@@ -9,9 +9,9 @@ const axios = require('axios');
 const getConfig = () => {
   const appToken = process.env.WXPUSHER_APP_TOKEN;
   //topicIds 是一个逗号分隔的字符串
-  const topicIds = process.env.WXPUSHER_DEFULT;
+  const topicIds = process.env.WXPUSHER_TOPIC_IDS;
   if (!appToken || !topicIds) {
-    console.log('请先设置 WXPUSHER_APP_TOKEN 和 WXPUSHER_DEFULT');
+    console.log('请先设置 WXPUSHER_APP_TOKEN 和 WXPUSHER_TOPIC_IDS');
     process.exit(0);
   }
   const topicIdsArray = topicIds.split(',');
