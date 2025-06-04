@@ -6,7 +6,7 @@
  * desc: 线报酷微信立减金监控，可魔改线报酷其他监控
  */
 const axios = require("axios");
-const wxPusher = require('../wxpusher.js');
+const wxPusher = require('../sendNotify.js');
 const fs = require("fs");
 
 const timeout = 15000;
@@ -15,7 +15,6 @@ const newUrl = domin + "/plus/json/rank/yixiaoshi.json";
 
 const pingbifenlei = "微博线报|线报活动|食品饮料|个护美妆|服饰鞋帽|居家生活|母婴儿童|数码电子|运动户外|宠物天地|医疗保健|更多好物|豆瓣线报|豆瓣买组|豆瓣拼组|豆瓣发组|豆瓣狗组|爱猫生活|爱猫澡盆|小嘀咕|酷安|葫芦侠三楼|小刀娱乐网|3K8资讯网|技术QQ网|YYOK大全|活动资讯网|免费赚钱中心线报活动|食品饮料|个护美妆|服饰鞋帽|居家生活|母婴儿童|数码电子|运动户外|宠物天地|医疗保健|更多好物买组|拼组|发组|狗组|爱猫生活|爱猫澡盆";
 const pingbitime = "5";
-const PUSH_TOPIC = process.env.XBTOPIC;
 
 function daysComputed(time) {
     const oldTimeFormat = new Date(time.replace(/-/g, "/"));
@@ -68,7 +67,7 @@ function isMessageInFile(message, filePath) {
 function appendMessageToFile(message, filePath) {
     ensureFileExists(filePath);
     const messages = readMessages(filePath);
-    messages.push({ id: message.id });
+    messages.push({id: message.id});
     if (messages.length > 100) {
         messages.splice(0, messages.length - 100);
     }
@@ -88,7 +87,7 @@ function generateRegexString(keywords) {
 (async () => {
     console.debug("开始获取线报酷数据...");
     try {
-        const response = await axios.get(newUrl, { timeout });
+        const response = await axios.get(newUrl, {timeout});
         const xbkdata = response.data || [];
         let items = [];
 
@@ -115,19 +114,30 @@ function generateRegexString(keywords) {
 
         items = items.filter((item) => new RegExp(zkt_gjc, "i").test(item.title));
 
-        let hebingdata = "";
+        let hebingdata = `
+        <div style="background-color: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); font-family: 'Microsoft YaHei', Arial, sans-serif; line-height: 1.6;">
+            <ul style="list-style: none; padding: 0; margin: 0;">`;
+
         for (const item of items) {
-            const text = item.title;
             const desp = domin + item.url;
-            const args = [text, text, desp];
-            if (PUSH_TOPIC) {
-                args.push(PUSH_TOPIC);
-            }
-            await wxPusher(...args)
-            if (hebingdata) hebingdata += "\n\n";
-            hebingdata += `${item.title}【${item.catename}】${desp}`;
+            hebingdata += `
+            <li style="border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 15px;">
+                <p style="font-size: 18px; font-weight: bold; color: #222; margin: 0;">${item.title}</p>
+                <p style="font-size: 14px; color: #555; margin: 5px 0;">分类：<strong>${item.catename}</strong></p>
+                <p style="font-size: 14px; color: #0078ff; margin: 0;">🔗 <a href="${desp}" target="_blank" style="text-decoration: none; color: #0078ff;">点击查看详情</a></p>
+            </li>`;
         }
 
+        hebingdata += `
+            </ul>
+        </div>`;
+
+
+
+        if (items.length >= 1) {
+            const title = "线报酷推送";
+            wxPusher.sendNotify(title, hebingdata);
+        }
         console.log("*******************************************");
         console.debug(`获取到${xbkdata.length}条数据，筛选后的新数据${items.length}条，本次任务结束`);
     } catch (error) {

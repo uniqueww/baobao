@@ -7,23 +7,18 @@
  */
 const axios = require('axios');
 // 在其他文件中调用
-const wxPusher = require('../wxpusher.js');
+const sendNotify = require('../sendNotify.js');
 const imageUrl = 'https://webquotepic.eastmoney.com/GetPic.aspx?token=44c9d251add88e27b65ed86506f6e5da&nid=118.SHAU&type=r&imageType=rf';
 // API Key 和环境变量的目标金价
 
 const getConfig = () => {
     //WxPusher的Topic，可不设置
-    const PUSH_TOPICIDS = process.env.HJTOPIC;
-    const API_KEY = process.env.TS_API_KEY;
     const TARGET_PRICE = process.env.TARGET_PRICE || 580; // 从环境变量读取金价，默认值为580
-    if (!API_KEY) {
-        console.log('TS_API_KEY 必须设置');
-        process.exit(1);
-    }
-    return { PUSH_TOPICIDS, API_KEY, TARGET_PRICE };
+    const API_KEY = process.env.TS_API_KEY;
+    return { API_KEY,TARGET_PRICE };
 }
 
-const { PUSH_TOPICIDS, API_KEY, TARGET_PRICE } = getConfig();
+const {API_KEY,TARGET_PRICE } = getConfig();
 
 // 通知函数（可以根据需要替换为实际的通知逻辑，例如发送邮件或消息）
 function sendNotification(message, summary) {
@@ -35,11 +30,7 @@ function sendNotification(message, summary) {
             <a href=${imageUrl} style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #4CAF50; text-decoration: none; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">点击查看详情</a>
         </div>
     `;
-    const args = [htmlMessage, summary, imageUrl]
-    if(PUSH_TOPICIDS){
-        args.push(PUSH_TOPICIDS)
-    }
-    wxPusher(...args);
+    sendNotify.sendNotify("金价通知",htmlMessage);
 }
 
 // 查询金价的函数
