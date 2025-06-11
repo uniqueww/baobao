@@ -1456,7 +1456,7 @@ async function sendNotify(text, desp, params = {}) {
     desp += '\n\n' + (await one());
   }
 
-  text=runAi();
+  // text=runAi();
 
   await Promise.all([
     serverNotify(text, desp), // 微信server酱
